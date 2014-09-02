@@ -13,3 +13,4 @@ XavierCHN的DOTA2RPG小教程
 > [如何在地图中添加一个陷阱](https://github.com/XavierCHN/XavierCHN.github.io/blob/master/%E9%99%B7%E9%98%B1.md#%E5%A6%82%E4%BD%95%E5%9C%A8%E5%9C%B0%E5%9B%BE%E4%B8%AD%E6%B7%BB%E5%8A%A0%E4%B8%80%E4%B8%AA%E9%99%B7%E9%98%B1)
 
 
+> [如何使用能量圈来选择、替换英雄，实现英雄转生等](https://github.com/XavierCHN/XavierCHN.github.io/blob/master/%E8%8B%B1%E9%9B%84%E8%AE%BE%E5%AE%9A.md)
