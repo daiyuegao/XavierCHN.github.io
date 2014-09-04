@@ -13,8 +13,8 @@ ClassTest = {
 	-- private variable
 	local _arg1 = 0,
   
-  -- global variable
-  arg2 = 0,
+	-- global variable
+	arg2 = 0,
   
 	-- getter and setter
 	Arg1 = function( self, o )
