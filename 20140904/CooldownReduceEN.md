@@ -1,6 +1,7 @@
-#### General Fix Cooldown Reduction
+#### General Fixed Cooldown Reduction
 
-Thanks to [\[Guide\] Apply Cooldown Reduction from Lua](http://www.reddit.com/r/Dota2Modding/comments/2fcfit/guide_apply_cooldown_reduction_from_lua/) , Author: [ractidous](http://www.reddit.com/user/ractidous)
+Thanks to [\[Guide\] Apply Cooldown Reduction from Lua](http://www.reddit.com/r/Dota2Modding/comments/2fcfit/guide_apply_cooldown_reduction_from_lua/) 
+Author: [ractidous](http://www.reddit.com/user/ractidous)
 
 ```Lua
 function ApplyCooldownReduction( _, event )
@@ -25,11 +26,14 @@ function ApplyCooldownReduction( _, event )
     end
 end
 ```
-Listen to game event in `function Activate()` in `addon_game_mode.lua` .
+Listen to game event in `function YourAddonGameMode:InitGameMode()` in `addon_game_mode.lua` .
 
 ```
 ListenToGameEvent( 'dota_player_used_ability', ApplyCooldownReduction, {} )
 ```
+
+
+
 
 #### all ability cooldown Reduction with one abilities
 
@@ -81,6 +85,8 @@ In `"ability_my_ability"` script chunk in `npc_abilities_custom.txt` :
 ```
 
 that's it.
+
+
 
 
 #### Reduce general cooldown with items
