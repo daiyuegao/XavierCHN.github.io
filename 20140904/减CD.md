@@ -38,7 +38,7 @@ end
 ListenToGameEvent( 'dota_player_used_ability', ApplyCooldownReduction, {} )
 ```
 
-#### 实现物品的减CD
+#### 实现用技能减少所有技能的CD
 
 上面那个方法虽然能实现，但是效果并不明显
 
@@ -97,7 +97,7 @@ end
 就可以了。
 
 
-#### 制作减CD的物品
+#### 实现用物品减少所有技能的CD
 
 在物品里面写上
 
