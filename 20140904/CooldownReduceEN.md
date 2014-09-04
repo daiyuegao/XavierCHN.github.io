@@ -1,67 +1,55 @@
 #### General Fix Cooldown Reduction
 
-Thanks to [ractidous](http://www.reddit.com/user/ractidous)
+Thanks to [\[Guide\] Apply Cooldown Reduction from Lua](http://www.reddit.com/r/Dota2Modding/comments/2fcfit/guide_apply_cooldown_reduction_from_lua/) , Author: [ractidous](http://www.reddit.com/user/ractidous)
 
 ```Lua
 function ApplyCooldownReduction( _, event )
-    -- 获取玩家使用的英雄
+    -- the hero cast the ability
     local hero = PlayerResource:GetSelectedHeroEntity( event.PlayerID - 1 )
-    -- 获取所使用的技能
+    -- the ability handle casted
     local ability = hero:FindAbilityByName( event.abilityname )
-    
-    -- 如果技能在CD中
+
     if ability:GetCooldownTimeRemaining() > 0 then
-        -- 0.5 代表减少50% CD
-        local reduction = 0.5
-        
-        -- 获取技能的CD时间
+        -- 0.4 means 40% cooldown reduction (15 -> 9 sec)
+        local reduction = 0.4
         local cdDefault = ability:GetCooldown( ability:GetLevel() - 1 )
-        -- 计算减少后的CD
         local cdReduced = cdDefault * ( 1.0 - reduction )   -- Modified cooldown time
-        -- 获取剩余的CD时间
         local cdRemaining = ability:GetCooldownTimeRemaining()
         
-        -- 如果技能的CD时间少于减少后的CD时间
+        
         if cdRemaining > cdReduced then
-            -- 计算减少后的CD
             cdRemaining = cdRemaining - cdDefault * reduction
-            -- 移除技能的CD
             ability:EndCooldown()
-            -- 重新开始CD，CD时间为减少后的CD时间
             ability:StartCooldown( cdRemaining )
         end
     end
 end
 ```
-之后我们到一个可以写的地方
+Listen to game event in `function Activate()` in `addon_game_mode.lua` .
 
 ```
 ListenToGameEvent( 'dota_player_used_ability', ApplyCooldownReduction, {} )
 ```
 
-#### 实现用技能减少所有技能的CD
+#### all ability cooldown Reduction with one abilities
 
-上面那个方法虽然能实现，但是效果并不明显
-
-我们可以做一个技能，使用这个技能，就减少所有自己的其他所有技能的CD时间
-
-首先，重新写一下减少CD的函数
-
-这个函数我们写在 `scripts/vscripts/hero_cd_reducer.lua` 里面
+Rewrite the function ApplyCooldownReduction into `scripts/vscripts/hero_cd_reducer.lua` :
 
 ```Lua
 function ApplyCooldownReduction( keys )
-    -- 获取施法者
+    -- catch the caster
     local hero = keys.caster
-    -- 读取CD减少的数量
+    -- catch the 'ReduceRate' key
     local reduceRate = keys.ReduceRate
     
-    -- 遍历英雄的所有技能
-    for i = 0, 17 do
+    -- Loop over all abilities
+    for i = 0, caster:GetAbilityCount() - 1 do
+        -- get the ith ability
         local ability = hero:GetAbilityByIndex(i)
         
         if ability then
-            -- 如果你想让这个技能不能刷新某些技能，那就在这里写上
+            -- if you dont want the ability to reduce some ability like ability_dont_refresh_1, 
+            -- ability_dont_refresh_2, remove '--[[' , ']]' ,change the ability name.
             --[[
             if ability:GetAbilityName() == "ability_dont_refresh_1" 
                 or ability:GetAbilityName() == "ability_dont_refresh_2" then
@@ -70,9 +58,7 @@ function ApplyCooldownReduction( keys )
             ]]
             if ability:GetCooldownTimeRemaining() > 0 then
                 local cdResulle = ability:GetCooldownTimeRemaining() * ( 1 - reduceRate )
-                -- 移除技能的CD
                 ability:EndCooldown()
-                -- 重新开始CD，CD时间为减少后的CD时间
                 ability:StartCooldown( cdRemaining )
             end
         end
@@ -80,10 +66,9 @@ function ApplyCooldownReduction( keys )
 end
 ```
 
-之后在那个技能的触发里面，写上
-
+In `"ability_my_ability"` script chunk in `npc_abilities_custom.txt` :
 ```
-"OnSpellStart"
+"OnSpellStart"// when the ability is casted
 {
     "RunScript"
     {
@@ -95,12 +80,12 @@ end
 }
 ```
 
-就可以了。
+that's it.
 
 
-#### 实现用物品减少所有技能的CD
+#### Reduce general cooldown with items
 
-在物品里面写上
+In `"item_my_item"` script chunk in `npc_items_custom.txt` :
 
 ```
 "Modifiers"
@@ -109,7 +94,7 @@ end
     {
         "Passive"       "1"
         "IsHidden"      "1"
-        "OnCreated"
+        "OnCreated"// when the item is equiped to some hero 
         {
             "RunScript"
             {
@@ -118,7 +103,7 @@ end
                 "ReduceRate"      "0.1"
             }
         }
-        "OnDestroy"
+        "OnDestroy"// when the hero is dead or removed the item
         {
             "RunScript"
             {
@@ -131,7 +116,7 @@ end
 }
 ```
 
-在 `scripts/vscripts/general_cd_reducer.lua` 中：
+In `scripts/vscripts/general_cd_reducer.lua` ：
 
 ```Lua
 function AddCooldownReduceRate(keys)
@@ -151,7 +136,7 @@ function RemoveCooldownReduceRate(keys)
 end
 ```
 
-在公用部分：
+In function `InitGameMode()` in `addon_game_mode.lua`：
 
 ```Lua
 ListenToGameEvent( 'dota_player_used_ability', ApplyCooldownReductionByItem, {} )
@@ -159,30 +144,22 @@ ListenToGameEvent( 'dota_player_used_ability', ApplyCooldownReductionByItem, {} 
 
 ```Lua
 function ApplyCooldownReductionByItem(_,event)
-    -- 获取玩家使用的英雄
+    -- catch the hero
     local hero = PlayerResource:GetSelectedHeroEntity( event.PlayerID - 1 )
-    -- 获取所使用的技能
+    -- the ability casted
     local ability = hero:FindAbilityByName( event.abilityname )
     
-    -- 如果技能在CD中
     if ability:GetCooldownTimeRemaining() > 0 then
-        -- 0.5 代表减少50% CD
+        -- get the cooldown reduction by hero context
         local reduction = caster:GetContext("cooldown_reduce") or 0
         
-        -- 获取技能的CD时间
         local cdDefault = ability:GetCooldown( ability:GetLevel() - 1 )
-        -- 计算减少后的CD
         local cdReduced = cdDefault * ( 1.0 - reduction )   -- Modified cooldown time
-        -- 获取剩余的CD时间
         local cdRemaining = ability:GetCooldownTimeRemaining()
         
-        -- 如果技能的CD时间少于减少后的CD时间
         if cdRemaining > cdReduced then
-            -- 计算减少后的CD
             cdRemaining = cdRemaining - cdDefault * reduction
-            -- 移除技能的CD
             ability:EndCooldown()
-            -- 重新开始CD，CD时间为减少后的CD时间
             ability:StartCooldown( cdRemaining )
         end
     end
