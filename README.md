@@ -16,3 +16,5 @@ XavierCHN的DOTA2RPG小教程
 > [如何使用能量圈来选择、替换英雄，实现英雄转生等](https://github.com/XavierCHN/XavierCHN.github.io/blob/master/%E8%8B%B1%E9%9B%84%E8%AE%BE%E5%AE%9A.md)
 
 > [如何实现自动使用的力量书、敏捷书等一切需要自动使用的东西](https://github.com/XavierCHN/XavierCHN.github.io/blob/master/%E8%87%AA%E5%8A%A8%E4%BD%BF%E7%94%A8%E7%9A%84%E5%8A%9B%E9%87%8F%E4%B9%A6.md)
+
+> [如何实现技能、物品、通用减CD](https://github.com/XavierCHN/XavierCHN.github.io/blob/master/20140904/%E5%87%8FCD.md)
