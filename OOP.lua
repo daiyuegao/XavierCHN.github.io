@@ -3,8 +3,8 @@ ClassTest = {
 	new = function (self, hero)
 		local o_meta = getmetatable( hero )
 		local my_meta = {
-			__index = function( _, name)
-			return self[name] or o_meta.__index[name]
+			__index = function( _, name, ... )
+			return self[name](...) or o_meta.__index[name](...)
 			end,
 		}
 		setmetatable(hero,my_meta)
