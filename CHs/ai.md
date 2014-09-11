@@ -37,3 +37,15 @@
 ```
 
 在这个单位被创建之后，将会自动执行`my_ai.lua`中的`Spawn`函数（貌似在D2WT出来之前，使用的是`DispatchOnPostSpawn`这个函数）
+
+所创建的单位实体，将会被赋予 `thisEntity` 变量。
+
+```Lua
+function Spawn()
+	thisEntity:SetContextThink('entity_ai'..tostring(thisEntity),
+	function()
+		-- AI函数
+	end, 1)
+end
+```
+就会以一秒的频率循环执行AI函数了。
