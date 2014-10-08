@@ -1,3 +1,4 @@
+```Lua
 Maps = {
 	-- 地图 小区10
 	{
@@ -86,3 +87,4 @@ function MapControl:InitMap()
 	end
 
 end
+```
