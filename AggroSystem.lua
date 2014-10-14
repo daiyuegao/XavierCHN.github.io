@@ -1,12 +1,14 @@
 local AggroSysPrefix = '[Aggro System]: '
 --print(AggroSysPrefix.."Aggro")
 
+if AggroSys == nil then
+    print(AggroSysPrefix.."Creating Aggro System")
+    AggroSys = class({})
+end
+
 -- 新增一个BOSS
 function AggroSys:New(boss)
-    if AggroSys == nil then
-        print(AggroSysPrefix.."Creating Aggro System")
-        AggroSys = class({})
-    end
+    
     self._AggroTable = self._AggroTable or {}
     print(AggroSysPrefix.."Creating Aggro System for boss: ",boss:GetUnitName())
     self._AggroTable[boss] = {}
